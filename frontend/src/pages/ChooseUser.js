@@ -69,9 +69,9 @@ const ChooseUser = ({ visitor }) => {
     } else if (user === "Student") {
       if (visitor === "guest") {
         // Guest mode: auto-login with student demo credentials
-        const rollNum = "884630";
+        const rollNum = "884631";
         const studentName = "Saiyara Sarowat Hoque";
-        const password = "123456";
+        const password = "87s67s87h88m";
         const fields = { rollNum, studentName, password };
         setLoader(true);
         dispatch(loginUser(fields, user));
