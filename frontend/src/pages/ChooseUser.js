@@ -58,8 +58,8 @@ const ChooseUser = ({ visitor }) => {
     if (user === "Admin") {
       if (visitor === "guest") {
         // Guest mode: auto-login with admin demo credentials
-        const email = "saiyarasarowathoque@gmail.com";
-        const password = "123456";
+        const email = "saiyarasarowathoque2007@gmail.com";
+        const password = "87s67s87h88m";
         const fields = { email, password };
         setLoader(true);
         dispatch(loginUser(fields, user));
@@ -81,7 +81,7 @@ const ChooseUser = ({ visitor }) => {
     } else if (user === "Teacher") {
       if (visitor === "guest") {
         // Guest mode: auto-login with teacher demo credentials
-        const email = "mitaislam@gmail.com";
+        const email = "eaven@gmail.com";
         const password = "123456";
         const fields = { email, password };
         setLoader(true);
