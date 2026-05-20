@@ -1,29 +1,62 @@
-const express = require("express")
-const cors = require("cors")
-const mongoose = require("mongoose")
-const dotenv = require("dotenv")
-const app = express()
-const Routes = require("../routes/route.js")
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
-const PORT = process.env.PORT || 5000
+const app = express();
 
-app.use(express.json({ limit: '10mb' }))
-app.use(cors())
+const Routes = require("../routes/route.js");
 
-mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.log("NOT CONNECTED TO NETWORK", err));
+app.use(express.json({ limit: "10mb" }));
+app.use(cors());
 
-app.use('/api', Routes);
+const MONGO_URL = process.env.MONGO_URL;
 
+let cached = global.mongoose;
 
+if (!cached) {
+  cached = global.mongoose = {
+    conn: null,
+    promise: null,
+  };
+}
 
-    app.listen(PORT, () => {
-        console.log(`Server started at port no. ${PORT}`)
-    })
+async function connectDB() {
+  if (cached.conn) {
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(MONGO_URL, {
+      bufferCommands: false,
+      serverSelectionTimeoutMS: 30000,
+    });
+  }
+
+  cached.conn = await cached.promise;
+
+  console.log("MongoDB Connected");
+
+  return cached.conn;
+}
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database connection failed");
+  }
+});
+
+app.use("/api", Routes);
+app.get("/", (req, res) => {
+  res.send("Backend Running Successfully");
+});
+
 
 
 module.exports = app;
